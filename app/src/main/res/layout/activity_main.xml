@@ -16,12 +16,22 @@
         tools:ignore="HardcodedText" />
 
     <ImageView
-        android:id="@+id/image_view_iv"
+        android:id="@+id/iv_plugin_img"
         android:layout_width="80dp"
         android:layout_height="100dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="100dp"
         android:contentDescription="@null"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        tools:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/tv_plugin_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_plugin_img"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        tools:text="plugin String" />
 
 </RelativeLayout>
