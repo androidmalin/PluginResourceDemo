@@ -36,17 +36,14 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Resources resources = PluginResourceLoader.getPluginResource(getApplicationContext());
-                //0x7f040001;test_str;I am in bundle str
-                String pluginString = resources.getString(resources.getIdentifier("test_str", "string", "com.example.plugin"));
+                String pluginString = resources.getString(resources.getIdentifier("plugin_string", "string", "com.example.plugin"));
                 tvPlugin.setText("pluginString:" + pluginString);
 
-                //0x7f010001;plugin_img;res/drawable-xxhdpi-v4/plugin_img.png
                 @SuppressLint("UseCompatLoadingForDrawables")
                 Drawable pluginDrawable = resources.getDrawable(resources.getIdentifier("plugin_img", "drawable", "com.example.plugin"));//注意，id参照Bundle apk中的R文件
                 ivPlugin.setImageDrawable(pluginDrawable);
             }
         });
-
     }
 
     private void initPluginApk() {

@@ -8,8 +8,13 @@ import android.content.res.Resources;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PluginResourceLoader {
+
+    public static Map<String, Resources> pluginResMap = new HashMap<>();
+
     /**
      * 获取Plugin中的资源
      */
@@ -19,7 +24,9 @@ public class PluginResourceLoader {
         String apkPath = dir.getAbsolutePath() + "/plugin-debug.apk";
         System.out.println("debug:apkPath = " + apkPath + ",exists=" + (new File(apkPath).exists()));
         AssetManager assetManager = createAssetManager(apkPath);
-        return new Resources(assetManager, context.getResources().getDisplayMetrics(), context.getResources().getConfiguration());
+        Resources resources = new Resources(assetManager, context.getResources().getDisplayMetrics(), context.getResources().getConfiguration());
+        pluginResMap.put("bundle_apk", resources);
+        return resources;
     }
 
     @SuppressWarnings("JavaReflectionMemberAccess")

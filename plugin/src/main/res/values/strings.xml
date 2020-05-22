@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-	<string name="app_name">Plugin</string>
-	<string name="test_str">I am in bundle str</string>
-
+    <string name="plugin_string">I am in plugin String</string>
 </resources>
