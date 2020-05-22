@@ -28,14 +28,10 @@ import dalvik.system.DexFile;
 public class AssetsMultiDexLoader {
 
     private static final String TAG = "AssetsApkLoader";
-
     private static boolean installed = false;
-
     private static final int MAX_SUPPORTED_SDK_VERSION = 20;
-
     private static final int MIN_SDK_VERSION = 4;
-
-    private static final Set<String> installedApk = new HashSet<String>();
+    private static final Set<String> installedApk = new HashSet<>();
 
     private AssetsMultiDexLoader() {
 
@@ -43,8 +39,6 @@ public class AssetsMultiDexLoader {
 
     /**
      * 安装Assets中的apk文件
-     *
-     * @param context
      */
     public static void install(Context context) {
         Log.i(TAG, "install...");
@@ -54,9 +48,7 @@ public class AssetsMultiDexLoader {
         try {
             clearOldDexDir(context);
         } catch (Throwable t) {
-            Log.w(TAG,
-                    "Something went wrong when trying to clear old MultiDex extraction, "
-                            + "continuing without cleaning.", t);
+            Log.w(TAG, "Something went wrong when trying to clear old MultiDex extraction, continuing without cleaning.", t);
         }
         AssetsManager.copyAllAssetsApk(context);
         Log.i(TAG, "install");
@@ -276,17 +268,14 @@ public class AssetsMultiDexLoader {
     private static void clearOldDexDir(Context context) throws Exception {
         File dexDir = context.getDir(AssetsManager.APK_DIR, Context.MODE_PRIVATE);
         if (dexDir.isDirectory()) {
-            Log.i(TAG, "Clearing old secondary dex dir (" + dexDir.getPath()
-                    + ").");
+            Log.i(TAG, "Clearing old secondary dex dir (" + dexDir.getPath() + ").");
             File[] files = dexDir.listFiles();
             if (files == null) {
-                Log.w(TAG, "Failed to list secondary dex dir content ("
-                        + dexDir.getPath() + ").");
+                Log.w(TAG, "Failed to list secondary dex dir content (" + dexDir.getPath() + ").");
                 return;
             }
             for (File oldFile : files) {
-                Log.i(TAG, "Trying to delete old file " + oldFile.getPath()
-                        + " of size " + oldFile.length());
+                Log.i(TAG, "Trying to delete old file " + oldFile.getPath() + " of size " + oldFile.length());
                 if (!oldFile.delete()) {
                     Log.w(TAG, "Failed to delete old file " + oldFile.getPath());
                 } else {
@@ -294,9 +283,7 @@ public class AssetsMultiDexLoader {
                 }
             }
             if (!dexDir.delete()) {
-                Log.w(TAG,
-                        "Failed to delete secondary dex dir "
-                                + dexDir.getPath());
+                Log.w(TAG, "Failed to delete secondary dex dir " + dexDir.getPath());
             } else {
                 Log.i(TAG, "Deleted old secondary dex dir " + dexDir.getPath());
             }
@@ -308,8 +295,7 @@ public class AssetsMultiDexLoader {
      */
     private static final class V19 {
 
-        private static void install(ClassLoader loader,
-                                    List<File> additionalClassPathEntries, File optimizedDirectory)
+        private static void install(ClassLoader loader, List<File> additionalClassPathEntries, File optimizedDirectory)
                 throws IllegalArgumentException, IllegalAccessException,
                 NoSuchFieldException, InvocationTargetException,
                 NoSuchMethodException {
@@ -321,38 +307,27 @@ public class AssetsMultiDexLoader {
              */
             Field pathListField = findField(loader, "pathList");
             Object dexPathList = pathListField.get(loader);
-            ArrayList<IOException> suppressedExceptions = new ArrayList<IOException>();
+            ArrayList<IOException> suppressedExceptions = new ArrayList<>();
             expandFieldArray(
                     dexPathList,
                     "dexElements",
-                    makeDexElements(dexPathList, new ArrayList<File>(
-                                    additionalClassPathEntries), optimizedDirectory,
-                            suppressedExceptions));
+                    makeDexElements(dexPathList, new ArrayList<>(additionalClassPathEntries), optimizedDirectory, suppressedExceptions));
             if (suppressedExceptions.size() > 0) {
                 for (IOException e : suppressedExceptions) {
                     Log.w(TAG, "Exception in makeDexElement", e);
                 }
-                Field suppressedExceptionsField = findField(loader,
-                        "dexElementsSuppressedExceptions");
-                IOException[] dexElementsSuppressedExceptions = (IOException[]) suppressedExceptionsField
-                        .get(loader);
+                Field suppressedExceptionsField = findField(loader, "dexElementsSuppressedExceptions");
+                IOException[] dexElementsSuppressedExceptions = (IOException[]) suppressedExceptionsField.get(loader);
 
                 if (dexElementsSuppressedExceptions == null) {
-                    dexElementsSuppressedExceptions = suppressedExceptions
-                            .toArray(new IOException[suppressedExceptions
-                                    .size()]);
+                    dexElementsSuppressedExceptions = suppressedExceptions.toArray(new IOException[suppressedExceptions.size()]);
                 } else {
-                    IOException[] combined = new IOException[suppressedExceptions
-                            .size() + dexElementsSuppressedExceptions.length];
+                    IOException[] combined = new IOException[suppressedExceptions.size() + dexElementsSuppressedExceptions.length];
                     suppressedExceptions.toArray(combined);
-                    System.arraycopy(dexElementsSuppressedExceptions, 0,
-                            combined, suppressedExceptions.size(),
-                            dexElementsSuppressedExceptions.length);
+                    System.arraycopy(dexElementsSuppressedExceptions, 0, combined, suppressedExceptions.size(), dexElementsSuppressedExceptions.length);
                     dexElementsSuppressedExceptions = combined;
                 }
-
-                suppressedExceptionsField.set(loader,
-                        dexElementsSuppressedExceptions);
+                suppressedExceptionsField.set(loader, dexElementsSuppressedExceptions);
             }
         }
 
@@ -361,16 +336,9 @@ public class AssetsMultiDexLoader {
          * {@code private static final dalvik.system.DexPathList#makeDexElements}
          * .
          */
-        private static Object[] makeDexElements(Object dexPathList,
-                                                ArrayList<File> files, File optimizedDirectory,
-                                                ArrayList<IOException> suppressedExceptions)
-                throws IllegalAccessException, InvocationTargetException,
-                NoSuchMethodException {
-            Method makeDexElements = findMethod(dexPathList, "makeDexElements",
-                    ArrayList.class, File.class, ArrayList.class);
-
-            return (Object[]) makeDexElements.invoke(dexPathList, files,
-                    optimizedDirectory, suppressedExceptions);
+        private static Object[] makeDexElements(Object dexPathList, ArrayList<File> files, File optimizedDirectory, ArrayList<IOException> suppressedExceptions) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+            Method makeDexElements = findMethod(dexPathList, "makeDexElements", ArrayList.class, File.class, ArrayList.class);
+            return (Object[]) makeDexElements.invoke(dexPathList, files, optimizedDirectory, suppressedExceptions);
         }
     }
 
@@ -379,11 +347,7 @@ public class AssetsMultiDexLoader {
      */
     private static final class V14 {
 
-        private static void install(ClassLoader loader,
-                                    List<File> additionalClassPathEntries, File optimizedDirectory)
-                throws IllegalArgumentException, IllegalAccessException,
-                NoSuchFieldException, InvocationTargetException,
-                NoSuchMethodException {
+        private static void install(ClassLoader loader, List<File> additionalClassPathEntries, File optimizedDirectory) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, InvocationTargetException, NoSuchMethodException {
             /*
              * The patched class loader is expected to be a descendant of
              * dalvik.system.BaseDexClassLoader. We modify its
@@ -404,15 +368,9 @@ public class AssetsMultiDexLoader {
          * {@code private static final dalvik.system.DexPathList#makeDexElements}
          * .
          */
-        private static Object[] makeDexElements(Object dexPathList,
-                                                ArrayList<File> files, File optimizedDirectory)
-                throws IllegalAccessException, InvocationTargetException,
-                NoSuchMethodException {
-            Method makeDexElements = findMethod(dexPathList, "makeDexElements",
-                    ArrayList.class, File.class);
-
-            return (Object[]) makeDexElements.invoke(dexPathList, files,
-                    optimizedDirectory);
+        private static Object[] makeDexElements(Object dexPathList, ArrayList<File> files, File optimizedDirectory) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+            Method makeDexElements = findMethod(dexPathList, "makeDexElements", ArrayList.class, File.class);
+            return (Object[]) makeDexElements.invoke(dexPathList, files, optimizedDirectory);
         }
     }
 
@@ -420,10 +378,7 @@ public class AssetsMultiDexLoader {
      * Installer for platform versions 4 to 13.
      */
     private static final class V4 {
-        private static void install(ClassLoader loader,
-                                    List<File> additionalClassPathEntries)
-                throws IllegalArgumentException, IllegalAccessException,
-                NoSuchFieldException, IOException {
+        private static void install(ClassLoader loader, List<File> additionalClassPathEntries) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, IOException {
             /*
              * The patched class loader is expected to be a descendant of
              * dalvik.system.DexClassLoader. We modify its fields mPaths,
@@ -433,14 +388,12 @@ public class AssetsMultiDexLoader {
 
             Field pathField = findField(loader, "path");
 
-            StringBuilder path = new StringBuilder(
-                    (String) pathField.get(loader));
+            StringBuilder path = new StringBuilder((String) pathField.get(loader));
             String[] extraPaths = new String[extraSize];
             File[] extraFiles = new File[extraSize];
             ZipFile[] extraZips = new ZipFile[extraSize];
             DexFile[] extraDexs = new DexFile[extraSize];
-            for (ListIterator<File> iterator = additionalClassPathEntries
-                    .listIterator(); iterator.hasNext(); ) {
+            for (ListIterator<File> iterator = additionalClassPathEntries.listIterator(); iterator.hasNext(); ) {
                 File additionalEntry = iterator.next();
                 String entryPath = additionalEntry.getAbsolutePath();
                 path.append(':').append(entryPath);
@@ -448,8 +401,7 @@ public class AssetsMultiDexLoader {
                 extraPaths[index] = entryPath;
                 extraFiles[index] = additionalEntry;
                 extraZips[index] = new ZipFile(additionalEntry);
-                extraDexs[index] = DexFile.loadDex(entryPath, entryPath
-                        + ".dex", 0);
+                extraDexs[index] = DexFile.loadDex(entryPath, entryPath + ".dex", 0);
             }
 
             pathField.set(loader, path.toString());

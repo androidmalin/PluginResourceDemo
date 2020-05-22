@@ -5,6 +5,7 @@ import android.content.res.AssetManager;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,13 +41,13 @@ public class AssetsManager {
                     continue;
                 }
                 in = assetManager.open(fileName);
-                File file = new File(dex, fileName);
-                if (file.exists() && file.length() == in.available()) {
-                    Log.i(TAG, fileName + "no change");
-                    return;
+                File pluginApkFile = new File(dex, fileName);
+                if (pluginApkFile.exists() && pluginApkFile.length() == in.available()) {
+                    Log.i(TAG, fileName + " no change");
+                    continue;
                 }
-                Log.i(TAG, fileName + " chaneged");
-                out = new FileOutputStream(file);
+                Log.i(TAG, fileName + " changed");
+                out = new FileOutputStream(pluginApkFile);
                 byte[] buffer = new byte[2048];
                 int read;
                 while ((read = in.read(buffer)) != -1) {
@@ -54,8 +55,10 @@ public class AssetsManager {
                 }
                 Log.i(TAG, fileName + " copy over");
             }
-            Log.i(TAG, "###copyAssets time = " + (System.currentTimeMillis() - startTime));
-        } catch (Exception e) {
+            Log.i(TAG, "copyAssets time = " + (System.currentTimeMillis() - startTime));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {

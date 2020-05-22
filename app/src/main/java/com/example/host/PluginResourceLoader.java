@@ -9,11 +9,11 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class BundleResourceLoader {
+public class PluginResourceLoader {
     /**
      * 获取Plugin中的资源
      */
-    public static Resources getBundleResource(Context context) {
+    public static Resources getPluginResource(Context context) {
         //AssetsManager.copyAllAssetsApk(context);
         File dir = context.getDir(AssetsManager.APK_DIR, Context.MODE_PRIVATE);
         String apkPath = dir.getAbsolutePath() + "/plugin-debug.apk";
