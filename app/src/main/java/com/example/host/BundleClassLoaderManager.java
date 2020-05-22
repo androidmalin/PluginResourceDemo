@@ -44,16 +44,7 @@ public class BundleClassLoaderManager {
     /**
      * 查找类
      */
-    public static Class<?> loadClass(Context context, String className) throws ClassNotFoundException {
-        try {
-            Class<?> clazz = context.getClassLoader().loadClass(className);
-            if (clazz != null) {
-                System.out.println("debug: class find in main classLoader");
-                return clazz;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public static Class<?> loadClass(String className) throws ClassNotFoundException {
         for (PluginDexClassLoader pluginDexClassLoader : pluginDexClassLoaderList) {
             try {
                 Class<?> clazz = pluginDexClassLoader.loadClass(className);
@@ -65,6 +56,6 @@ public class BundleClassLoaderManager {
                 e.printStackTrace();
             }
         }
-        throw new ClassCastException(className + " not found exception");
+        throw new ClassNotFoundException("class not found");
     }
 }
