@@ -52,7 +52,7 @@ public class MainActivity extends Activity {
     }
 
     private void initPluginApk() {
-        BundleClassLoaderManager.install(getApplicationContext());
+        PluginClassLoaderManager.install(getApplicationContext());
     }
 
     private void initView() {
@@ -64,7 +64,7 @@ public class MainActivity extends Activity {
 
     private void loadApk() {
         try {
-            Class<?> utilsClazz = BundleClassLoaderManager.loadClass("com.example.plugin.Utils");
+            Class<?> utilsClazz = PluginClassLoaderManager.loadClass("com.example.plugin.Utils");
             Constructor<?> constructor = utilsClazz.getConstructor();
             Object utils = constructor.newInstance();
 

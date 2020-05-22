@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-public class BundleClassLoaderManager {
+public class PluginClassLoaderManager {
 
     public static List<PluginDexClassLoader> pluginDexClassLoaderList = new ArrayList<>();
 
